@@ -18,37 +18,41 @@ func NewCandidateManager(conn *sql.DB) *CandidateManager {
 }
 
 func (cm *CandidateManager) Create(cand *pb.CreateCandidateReq) error {
-	id := uuid.New()
 
+	_, err := cm.conn.Exec("BEGIN")
+	if err != nil {
+		return fmt.Errorf("error executing query: %w", err)
+	}
+	id := uuid.New()
 	query := `INSERT INTO candidate(id, election_id, public_id) VALUES($1, $2, $3)`
-	_, err := cm.conn.Exec(query, id, cand.ElectionId, cand.PublicId)
+	_, err = cm.conn.Exec(query, id, cand.ElectionId, cand.PublicId)
 	if err != nil {
 		return fmt.Errorf("error executing query: %w", err)
 	}
 	return nil
 }
 
-func (cm *CandidateManager) Get(cand *pb.GetCandidate) (*pb.CandidateRes, error) {
+func (cm *CandidateManager) Get(cand *pb.GetByIdReq) (*pb.CandidateRes, error) {
 	res := pb.CandidateRes{}
 	query := `SELECT 
-            c.id,
-            c.election_id,
-            c.public_id,
-            e.name AS election_name,
-            e.date AS election_date,
-            p.first_name,
-            p.last_name,
-            p.birthday,
-            p.gender,
-            p.nation
-        FROM 
-            candidate c
-        JOIN 
-            election e ON c.election_id = e.id
-        JOIN 
-            public p ON c.public_id = p.id
-        WHERE 
-            c.id = $1`
+				c.id,
+				c.election_id,
+				c.public_id,
+				e.name AS election_name,
+				e.date AS election_date,
+				p.first_name,
+				p.last_name,
+				p.birthday,
+				p.gender,
+				p.nation
+			FROM 
+				candidate c
+			JOIN 
+				election e ON c.election_id = e.id
+			JOIN 
+				public p ON c.public_id = p.id
+			WHERE 
+				c.id = $1`
 	row := cm.conn.QueryRow(query, cand.Id)
 	err := row.Scan(
 		&res.Id,
@@ -70,22 +74,22 @@ func (cm *CandidateManager) Get(cand *pb.GetCandidate) (*pb.CandidateRes, error)
 
 func (cm *CandidateManager) GetAll(filter *pb.Filter) (*pb.CandidatiesGetAllResp, error) {
 	query := `SELECT 
-            c.id,
-            c.election_id,
-            c.public_id,
-            e.name AS election_name,
-            e.date AS election_date,
-            p.first_name,
-            p.last_name,
-            p.birthday,
-            p.gender,
-            p.nation
-        FROM 
-            candidate c
-        JOIN 
-            election e ON c.election_id = e.id
-        JOIN 
-            public p ON c.public_id = p.id`
+				c.id,
+				c.election_id,
+				c.public_id,
+				e.name AS election_name,
+				e.date AS election_date,
+				p.first_name,
+				p.last_name,
+				p.birthday,
+				p.gender,
+				p.nation
+			FROM 
+				candidate c
+			JOIN 
+				election e ON c.election_id = e.id
+			JOIN 
+				public p ON c.public_id = p.id`
 	if filter.GetLimit() > 0 {
 		query += " LIMIT " + fmt.Sprintf("%d", filter.GetLimit())
 	}
@@ -104,15 +108,15 @@ func (cm *CandidateManager) GetAll(filter *pb.Filter) (*pb.CandidatiesGetAllResp
 		var candidate pb.CandidateRes
 		err := rows.Scan(
 			&candidate.Id,
+			&candidate.Election.Id,
+			&candidate.Election.Name,
+			&candidate.Election.Date,
 			&candidate.Public.Id,
 			&candidate.Public.FirstName,
 			&candidate.Public.LastName,
 			&candidate.Public.Birthday,
 			&candidate.Public.Gender,
 			&candidate.Public.Nation,
-			&candidate.Election.Id,
-			&candidate.Election.Name,
-			&candidate.Election.Date,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("error scanning row: %w", err)

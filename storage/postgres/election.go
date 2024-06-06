@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"database/sql"
+	"fmt"
 	pb "project/genproto/public"
 
 	"github.com/google/uuid"
@@ -19,11 +20,14 @@ func (em *ElectionManager) Create(elec *pb.CreateElectionReq) error {
 	id := uuid.NewString()
 	query := `INSERT INTO election(id, name, date) VALUES($1, $2, $3)`
 	_, err := em.conn.Exec(query, id, elec.Name, elec.Date)
-	return err
+	if err != nil {
+		return fmt.Errorf("error executing query: %w", err)
+	}
+	return nil
 }
 
-func (em *ElectionManager) Get(elec *pb.ElectionReq) (*pb.ElectionReq, error) {
-	res := &pb.ElectionReq{}
+func (em *ElectionManager) Get(elec *pb.GetByIdReq) (*pb.ElectionRes, error) {
+	res := &pb.ElectionRes{}
 	query := `SELECT id, name, date FROM election WHERE id = $1`
 	row := em.conn.QueryRow(query, elec.Id)
 	err := row.Scan(
@@ -51,7 +55,7 @@ func (em *ElectionManager) GetAll(filter *pb.Filter) (*pb.ElectionsGetAllResp, e
 	electionList := &pb.ElectionsGetAllResp{}
 
 	for rows.Next() {
-		election := &pb.ElectionReq{}
+		election := &pb.ElectionRes{}
 		err := rows.Scan(
 			&election.Id,
 			&election.Name,

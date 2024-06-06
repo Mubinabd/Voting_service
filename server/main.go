@@ -4,7 +4,7 @@ import (
 	"log"
 	"net"
 	"project/config"
-	"project/genproto/public"
+	pb "project/genproto/public"
 	"project/service"
 	"project/storage/postgres"
 
@@ -19,14 +19,14 @@ func main() {
 		log.Println("error while connecting to postgres: ", err)
 	}
 
-	liss, err := net.Listen("tcp", ":50051")
+	liss, err := net.Listen("tcp", ":50050")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	public.RegisterCandidateServiceServer(s, service.NewCandidateService(db))
-	public.RegisterElectionServiceServer(s, service.NewElectionService(db))
-	public.RegisterPublicVoteServiceServer(s, service.NewPublicVoteService(db))
+	pb.RegisterCandidateServiceServer(s, service.NewCandidateService(db))
+	pb.RegisterElectionServiceServer(s, service.NewElectionService(db))
+	pb.RegisterPublicVoteServiceServer(s, service.NewPublicVoteService(db))
 
 	reflection.Register(s)
 	log.Printf("server listening at %v", liss.Addr())

@@ -22,7 +22,7 @@ func (es *ElectionService) Create(ctx context.Context, req *pb.CreateElectionReq
 	}
 	return &pb.Void{},nil
 }
-func (es *ElectionService) GetById(ctx context.Context, req *pb.ElectionReq) (*pb.ElectionReq, error) {
+func (es *ElectionService) GetById(ctx context.Context, req *pb.GetByIdReq) (*pb.ElectionRes, error) {
 	res,err := es.stg.Election().Get(req)
 	if err!= nil {
 		return nil, err

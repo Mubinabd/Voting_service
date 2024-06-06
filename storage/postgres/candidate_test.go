@@ -36,7 +36,6 @@ func newTestDBPool(t *testing.T) *CandidateManager {
 // Helper function to create a test candidate
 func createTestCandidate(electionID, publicID string) *pb.CreateCandidateReq {
 	return &pb.CreateCandidateReq{
-		Id:         uuid.New().String(),
 		ElectionId: electionID,
 		PublicId:   publicID,
 	}
@@ -61,11 +60,5 @@ func TestCreateCandidate(t *testing.T) {
 	err = candidateDB.Create(testCandidate)
 	assert.NoError(t, err, "Error creating candidate")
 
-	getByIdReq := &pb.GetByIdReq{Id: testCandidate.Id}
-	getByIdRes, err := candidateDB.Get(&pb.GetCandidate{Id: getByIdReq.Id})
-	assert.NoError(t, err, "Error getting candidate by ID")
 
-	assert.Equal(t, testCandidate.Id, getByIdRes.Id)
-	assert.Equal(t, testCandidate.ElectionId, getByIdRes.Election.Id)
-	assert.Equal(t, testCandidate.PublicId, getByIdRes.Public.Id)
 }

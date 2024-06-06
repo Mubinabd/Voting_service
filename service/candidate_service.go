@@ -23,25 +23,25 @@ func (cs *CandidateService) Create(ctx context.Context, req *pb.CreateCandidateR
 	return &pb.Void{}, nil
 }
 
-func (cs *CandidateService) GetById(ctx context.Context, req *pb.GetCandidate) (*pb.CandidateRes, error) {
-	res,err := cs.stg.Candidate().Get(req)
-	if err!= nil {
+func (cs *CandidateService) GetById(ctx context.Context, req *pb.GetByIdReq) (*pb.CandidateRes, error) {
+	res, err := cs.stg.Candidate().Get(req)
+	if err != nil {
 		return nil, err
 	}
-	return res,nil
+	return res, nil
 }
 func (cs *CandidateService) GetAll(ctx context.Context, req *pb.Filter) (*pb.CandidatiesGetAllResp, error) {
-	res,err := cs.stg.Candidate().GetAll(req)
-	if err!= nil {
+	res, err := cs.stg.Candidate().GetAll(req)
+	if err != nil {
 		return nil, err
 	}
-	return res,nil
+	return res, nil
 }
 
-func (cs *CandidateService) Delete(ctx context.Context, req *pb.GetByIdReq) (*pb.Void, error ) {
+func (cs *CandidateService) Delete(ctx context.Context, req *pb.GetByIdReq) (*pb.Void, error) {
 	err := cs.stg.Candidate().Delete(req)
-    if err != nil {
-        return nil, err
-    }
-    return &pb.Void{},nil
+	if err != nil {
+		return nil, err
+	}
+	return &pb.Void{}, nil
 }

@@ -3,11 +3,11 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
-	"github.com/google/uuid"
+	pb "project/genproto/public"
+	"testing"
+
 	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/assert"
-	"project/genproto/public"
-	"testing"
 )
 
 // Helper function to create a new test DB pool
@@ -32,9 +32,8 @@ func NewTestDBPool(t *testing.T) *ElectionManager {
 }
 
 // Helper function to create a test election
-func createTestElection() *public.CreateElectionReq {
-	return &public.CreateElectionReq{
-		Id:   uuid.New().String(),
+func createTestElection() *pb.CreateElectionReq {
+	return &pb.CreateElectionReq{
 		Name: "Test Election",
 		Date: "2024-06-01",
 	}
@@ -48,7 +47,7 @@ func TestCreateElection(t *testing.T) {
 	err := electionDB.Create(testElection)
 	assert.NoError(t, err, "Error creating election")
 
-	getByIdReq := &public.ElectionReq{Id: testElection.Id}
+	getByIdReq := &pb.GetByIdReq{Id: testElection.Name}
 	getByIdRes, err := electionDB.Get(getByIdReq)
 	assert.NoError(t, err, "Error getting election by ID")
 	assert.Equal(t, testElection.Name, getByIdRes.Name, "Election name does not match")
@@ -63,7 +62,7 @@ func TestUpdateElection(t *testing.T) {
 	err := electionDB.Create(testElection)
 	assert.NoError(t, err, "Error creating election")
 
-	updatedElection := &public.ElectionUpdate{
+	updatedElection := &pb.ElectionUpdate{
 		Name: "Updated Election Name",
 		Date: "2024-07-01",
 	}
@@ -71,7 +70,7 @@ func TestUpdateElection(t *testing.T) {
 	err = electionDB.Update(updatedElection)
 	assert.NoError(t, err, "Error updating election")
 
-	getByIdReq := &public.ElectionReq{Id: testElection.Id}
+	getByIdReq := &pb.GetByIdReq{Id: testElection.Name}
 	getByIdRes, err := electionDB.Get(getByIdReq)
 	assert.NoError(t, err, "Error getting election by ID")
 	assert.Equal(t, updatedElection.Name, getByIdRes.Name, "Updated election name does not match")
@@ -86,11 +85,11 @@ func TestDeleteElection(t *testing.T) {
 	err := electionDB.Create(testElection)
 	assert.NoError(t, err, "Error creating election")
 
-	deleteReq := &public.GetByIdReq{Id: testElection.Id}
+	deleteReq := &pb.GetByIdReq{Id: testElection.Name}
 	err = electionDB.Delete(deleteReq)
 	assert.NoError(t, err, "Error deleting election")
 
-	_, err = electionDB.Get(&public.ElectionReq{Id: deleteReq.Id})
+	_, err = electionDB.Get(&pb.GetByIdReq{Id: deleteReq.Id})
 	assert.Error(t, err, "Expected error when getting deleted election")
 }
 
@@ -101,12 +100,11 @@ func TestGetAllElections(t *testing.T) {
 	// Creating multiple test elections
 	for i := 0; i < 5; i++ {
 		testElection := createTestElection()
-		testElection.Id = uuid.New().String()
 		err := electionDB.Create(testElection)
 		assert.NoError(t, err, "Error creating election")
 	}
 
-	filter := &public.Filter{
+	filter := &pb.Filter{
 		Limit:  5,
 		Offset: 0,
 	}

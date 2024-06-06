@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"project/genproto/public"
+	pb "project/genproto/public"
 
 	"github.com/stretchr/testify/assert"
 	_ "github.com/lib/pq"
@@ -32,9 +32,8 @@ func newTestDBpool(t *testing.T) *sql.DB {
 	return db
 }
 
-// Helper function to create a test public vote
-func createTestPublicVote() *public.CreatePublicVoteReq {
-	return &public.CreatePublicVoteReq{
+func createTestPublicVote() *pb.CreatePublicVoteReq {
+	return &pb.CreatePublicVoteReq{
 		ElectionId:  "d09eded5-0ecd-4290-af42-ba534c48060c",
 		PublicId:    "d09eded5-0ecd-4290-af42-ba534c48060a",
 		CandidateId: "d09eded5-0ecd-4290-af42-ba534c48060b",
@@ -49,7 +48,7 @@ func TestCreatePublicVote(t *testing.T) {
 
 	testPublicVote := createTestPublicVote()
 	err := publicVoteManager.Create(testPublicVote)
-	assert.NoError(t, err, "Error creating public vote")
+	assert.NoError(t, err, "Error creating pb vote")
 
 }
 
@@ -59,12 +58,12 @@ func TestGetAllPublicVotes(t *testing.T) {
 
 	publicVoteManager := NewPublicVoteManager(db)
 
-	filter := &public.Filter{
+	filter := &pb.Filter{
 		Limit:  10,
 		Offset: 0,
 	}
 	resp, err := publicVoteManager.GetAll(filter)
-	assert.NoError(t, err, "Error getting all public votes")
+	assert.NoError(t, err, "Error getting all pb votes")
 
 	assert.NotNil(t, resp)
 }
