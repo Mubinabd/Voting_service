@@ -32,7 +32,7 @@ const (
 type PartyServiceClient interface {
 	CreateParty(ctx context.Context, in *PartyCreate, opts ...grpc.CallOption) (*Void, error)
 	GetParty(ctx context.Context, in *GetByIdReq, opts ...grpc.CallOption) (*PartyRes, error)
-	GetAllParty(ctx context.Context, in *Filter, opts ...grpc.CallOption) (*GetAllPartysResponse, error)
+	GetAllParty(ctx context.Context, in *GetAllPartysRequest, opts ...grpc.CallOption) (*GetAllPartysResponse, error)
 	UpdateParty(ctx context.Context, in *PartyUpdate, opts ...grpc.CallOption) (*Void, error)
 	DeleteParty(ctx context.Context, in *GetByIdReq, opts ...grpc.CallOption) (*Void, error)
 }
@@ -63,7 +63,7 @@ func (c *partyServiceClient) GetParty(ctx context.Context, in *GetByIdReq, opts 
 	return out, nil
 }
 
-func (c *partyServiceClient) GetAllParty(ctx context.Context, in *Filter, opts ...grpc.CallOption) (*GetAllPartysResponse, error) {
+func (c *partyServiceClient) GetAllParty(ctx context.Context, in *GetAllPartysRequest, opts ...grpc.CallOption) (*GetAllPartysResponse, error) {
 	out := new(GetAllPartysResponse)
 	err := c.cc.Invoke(ctx, PartyService_GetAllParty_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -96,7 +96,7 @@ func (c *partyServiceClient) DeleteParty(ctx context.Context, in *GetByIdReq, op
 type PartyServiceServer interface {
 	CreateParty(context.Context, *PartyCreate) (*Void, error)
 	GetParty(context.Context, *GetByIdReq) (*PartyRes, error)
-	GetAllParty(context.Context, *Filter) (*GetAllPartysResponse, error)
+	GetAllParty(context.Context, *GetAllPartysRequest) (*GetAllPartysResponse, error)
 	UpdateParty(context.Context, *PartyUpdate) (*Void, error)
 	DeleteParty(context.Context, *GetByIdReq) (*Void, error)
 	mustEmbedUnimplementedPartyServiceServer()
@@ -112,7 +112,7 @@ func (UnimplementedPartyServiceServer) CreateParty(context.Context, *PartyCreate
 func (UnimplementedPartyServiceServer) GetParty(context.Context, *GetByIdReq) (*PartyRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetParty not implemented")
 }
-func (UnimplementedPartyServiceServer) GetAllParty(context.Context, *Filter) (*GetAllPartysResponse, error) {
+func (UnimplementedPartyServiceServer) GetAllParty(context.Context, *GetAllPartysRequest) (*GetAllPartysResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllParty not implemented")
 }
 func (UnimplementedPartyServiceServer) UpdateParty(context.Context, *PartyUpdate) (*Void, error) {
@@ -171,7 +171,7 @@ func _PartyService_GetParty_Handler(srv interface{}, ctx context.Context, dec fu
 }
 
 func _PartyService_GetAllParty_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Filter)
+	in := new(GetAllPartysRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -183,7 +183,7 @@ func _PartyService_GetAllParty_Handler(srv interface{}, ctx context.Context, dec
 		FullMethod: PartyService_GetAllParty_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PartyServiceServer).GetAllParty(ctx, req.(*Filter))
+		return srv.(PartyServiceServer).GetAllParty(ctx, req.(*GetAllPartysRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
