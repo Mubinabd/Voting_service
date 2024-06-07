@@ -18,14 +18,9 @@ func NewCandidateManager(conn *sql.DB) *CandidateManager {
 }
 
 func (cm *CandidateManager) Create(cand *pb.CreateCandidateReq) error {
-
-	_, err := cm.conn.Exec("BEGIN")
-	if err != nil {
-		return fmt.Errorf("error executing query: %w", err)
-	}
-	id := uuid.New()
+	id := uuid.NewString()
 	query := `INSERT INTO candidate(id, election_id, public_id) VALUES($1, $2, $3)`
-	_, err = cm.conn.Exec(query, id, cand.ElectionId, cand.PublicId)
+	_, err := cm.conn.Exec(query, id, cand.ElectionId, cand.PublicId)
 	if err != nil {
 		return fmt.Errorf("error executing query: %w", err)
 	}
