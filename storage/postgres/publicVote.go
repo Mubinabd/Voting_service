@@ -43,23 +43,19 @@ func (pvm *PublicVoteManager) GetAll(filter *pb.Filter) (*pb.PublicVotesGetAllRe
 		p.id,
 		p.election_id,
 		p.public_id,
-		p.candidate_id,
 		e.name AS election_name,
 		e.date AS election_date,
 		pb.first_name,
 		pb.last_name,
 		pb.birthday,
 		pb.gender,
-		pb.nation,
-		c.id
+		pb.nation
 	FROM 
 		public_vote p
 	JOIN 
 		election e ON p.election_id = e.id
 	JOIN 
 		public pb ON p.public_id = pb.id
-	JOIN 
-		candidate c ON p.candidate_id = c.id
 	WHERE 
 		p.id = $1
 `

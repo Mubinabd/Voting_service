@@ -37,7 +37,7 @@ func (es *ElectionService) GetAll(ctx context.Context, req *pb.Filter) (*pb.Elec
 	return res,nil
 }
 
-func (es *ElectionService) UpdateItem(ctx context.Context, elec *pb.ElectionUpdate) (*pb.Void, error) {
+func (es *ElectionService) Update(ctx context.Context, elec *pb.ElectionUpdate) (*pb.Void, error) {
 	err := es.stg.Election().Update(elec)
 	if err != nil {
 		return nil, err

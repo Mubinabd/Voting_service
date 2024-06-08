@@ -5,7 +5,7 @@ option go_package = "genproto/public/";
 package protos;
 
 import "protos/party.proto";
-import "protos/void.proto";
+import "protos/common.proto";
 
 service PublicService {
   rpc Create (Public) returns (Void) {}

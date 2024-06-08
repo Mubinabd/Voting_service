@@ -5,7 +5,7 @@ option go_package = "genproto/public/";
 package protos;
 
 import "protos/election.proto";
-import "protos/void.proto";
+import "protos/common.proto";
 import "protos/public.proto";
 import "protos/candidate.proto";
 

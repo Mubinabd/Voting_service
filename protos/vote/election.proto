@@ -4,7 +4,7 @@ option go_package = "genproto/public/";
 
 package protos;
 
-import "protos/void.proto";
+import "protos/common.proto";
 
 service ElectionService{
     rpc Create(CreateElectionReq) returns (Void) {}
