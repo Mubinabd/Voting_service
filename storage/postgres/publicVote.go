@@ -32,9 +32,9 @@ func (pvm *PublicVoteManager) Create(pubvote *pb.CreatePublicVoteReq) error {
 	}
 
 	id = uuid.NewString()
-	query = `INSERT INTO votes(id,candidate_id)VALUES($1,$2)`
+	query = `INSERT INTO votes(id,candidate_id,,election_id)VALUES($1,$2,$3)`
 
-	_, err = t.Exec(query, id, pubvote.CandidateId)
+	_, err = t.Exec(query, id, pubvote.CandidateId,pubvote.ElectionId)
 	return err
 }
 

@@ -25,7 +25,8 @@ CREATE TABLE if not EXISTS public_vote(
 
 CREATE TABLE if not EXISTS votes(
     id uuid PRIMARY key DEFAULT gen_random_uuid(),
-    candidate_id uuid REFERENCES candidate(id)
+    candidate_id uuid REFERENCES candidate(id),
+    election_id uuid REFERENCES election(id)
 );
 
 CREATE TABLE if not EXISTS public(
