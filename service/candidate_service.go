@@ -23,7 +23,7 @@ func (cs *CandidateService) Create(ctx context.Context, req *pb.CreateCandidateR
 	return &pb.Void{}, nil
 }
 
-func (cs *CandidateService) GetById(ctx context.Context, req *pb.GetByIdReq) (*pb.CandidateRes, error) {
+func (cs *CandidateService) Get(ctx context.Context, req *pb.GetByIdReq) (*pb.CandidateRes, error) {
 	res, err := cs.stg.Candidate().Get(req)
 	if err != nil {
 		return nil, err

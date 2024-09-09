@@ -22,7 +22,7 @@ func (es *ElectionService) Create(ctx context.Context, req *pb.CreateElectionReq
 	}
 	return &pb.Void{},nil
 }
-func (es *ElectionService) GetById(ctx context.Context, req *pb.GetByIdReq) (*pb.ElectionRes, error) {
+func (es *ElectionService) Get(ctx context.Context, req *pb.GetByIdReq) (*pb.ElectionRes, error) {
 	res,err := es.stg.Election().Get(req)
 	if err!= nil {
 		return nil, err
@@ -37,7 +37,7 @@ func (es *ElectionService) GetAll(ctx context.Context, req *pb.Filter) (*pb.Elec
 	return res,nil
 }
 
-func (es *ElectionService) UpdateItem(ctx context.Context, elec *pb.ElectionUpdate) (*pb.Void, error) {
+func (es *ElectionService) Update(ctx context.Context, elec *pb.ElectionUpdate) (*pb.Void, error) {
 	err := es.stg.Election().Update(elec)
 	if err != nil {
 		return nil, err
